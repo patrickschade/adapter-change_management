@@ -47,7 +47,7 @@ const validResponseRegex = /(2\d\d)/;
  *   Will be HTML text if hibernating instance.
  * @param {error} callback.error - The error property of callback.
  */
-function post(serviceNowTable, callback) {
+function get(serviceNowTable, callback) {
 
   // Initialize return arguments for callback
   let callbackData = null;
@@ -108,7 +108,7 @@ function post(serviceNowTable, callback) {
  *   Will be HTML text if hibernating instance.
  * @param {error} callback.error - The error property of callback.
  */
-function get(serviceNowTable, callback) {
+function post(serviceNowTable, callback) {
 
   // Initialize return arguments for callback
   let callbackData = null;
