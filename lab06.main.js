@@ -103,7 +103,8 @@ healthcheck(callback) {
     */
    if (error) {
 
-
+       log.debug("Errors found when checking for connection to ServiceNow for id " + this.id);
+       this.emitOffline()
      /**
       * Write this block.
       * If an error was returned, we need to emit OFFLINE.
@@ -116,14 +117,10 @@ healthcheck(callback) {
       * healthcheck(), execute it passing the error seen as an argument
       * for the callback's errorMessage parameter.
       */
-
-      log.error("Errors found when checking for connection to ServiceNow for id " + this.id);
-       if(callback){
-         callback(result,error);
-       }
-       this.emitOffline()
    } else {
         
+       log.debug("No errors found when checking for connection to ServiceNow.");
+       this.emitOnline()
      /**
       * Write this block.
       * If no runtime problems were detected, emit ONLINE.
@@ -134,11 +131,6 @@ healthcheck(callback) {
       * parameter as an argument for the callback function's
       * responseData parameter.
       */
-       log.info("No errors found when checking for connection to ServiceNow for " + this.id);
-       this.emitOnline()
-       if(callback){
-         callback(result,error);
-       }
    }
  });
 }
@@ -196,71 +188,31 @@ healthcheck(callback) {
      * Note how the object was instantiated in the constructor().
      * get() takes a callback function.
      */
-         this.connector.get((data,error) => {
-            if(error){
-                callback(data,error);
-            }else{
-                if(data.body){
-                let bodyData = JSON.parse(data.body);
-                let changeTickets= [];
-                bodyData.result.forEach((item) => {
-                    let changeTicket = {
-                        change_ticket_number: item.number,
-                        active: item.active,
-                        priority: item.priority,
-                        description: item.description,
-                        work_start: item.work_start,
-                        work_end: item.work_end,
-                        change_ticket_key: item.sys_id
-                        }
-                    changeTickets.push(changeTicket);
-                });
-                callback(changeTickets,error);
-                }
-            }
-         })
-  }
 
+     this.connector.get(callback)
+
+
+  }
 
   /**
    * @memberof ServiceNowAdapter
    * @method postRecord
- * @summary Create ServiceNow Record
+   * @summary Create ServiceNow Record
    * @description Creates a record in ServiceNow.
    *
    * @param {ServiceNowAdapter~requestCallback} callback - The callback that
    *   handles the response.
    */
-
-  postRecord(callback) {
+   postRecord(callback) {
     /**
      * Write the body for this function.
      * The function is a wrapper for this.connector's post() method.
      * Note how the object was instantiated in the constructor().
      * post() takes a callback function.
      */
-     this.connector.post((data,error) => {
-       if(error){
-           callback(data,error);
-       }else{
-         if(data.body){
-           let bodyObj = JSON.parse(data.body);
-           let item = bodyObj.result;
-           let chgTicket = {
-                        change_ticket_number: item.number,
-                        active: item.active,
-                        priority: item.priority,
-                        description: item.description,
-                        work_start: item.work_start,
-                        work_end: item.work_end,
-                        change_ticket_key: item.sys_id
-                   }
-           callback(chgTicket,error);
-         }
-       }
-     });
-  }
+     this.connector.post(callback)
 
+  }
   
 }
 
