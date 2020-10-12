@@ -102,9 +102,6 @@ healthcheck(callback) {
     * the blocks for each branch.
     */
    if (error) {
-
-       log.debug("Errors found when checking for connection to ServiceNow for id " + this.id);
-       this.emitOffline()
      /**
       * Write this block.
       * If an error was returned, we need to emit OFFLINE.
@@ -117,10 +114,9 @@ healthcheck(callback) {
       * healthcheck(), execute it passing the error seen as an argument
       * for the callback's errorMessage parameter.
       */
+      this.emitOffline();
+      log.error("Error from "+this.id);
    } else {
-        
-       log.debug("No errors found when checking for connection to ServiceNow.");
-       this.emitOnline()
      /**
       * Write this block.
       * If no runtime problems were detected, emit ONLINE.
@@ -131,6 +127,8 @@ healthcheck(callback) {
       * parameter as an argument for the callback function's
       * responseData parameter.
       */
+      this.emitOnline();
+      log.debug("Online");
    }
  });
 }
@@ -188,10 +186,7 @@ healthcheck(callback) {
      * Note how the object was instantiated in the constructor().
      * get() takes a callback function.
      */
-
-     this.connector.get(callback)
-
-
+     this.connector.get((data,error)=> {return callback(data,error)});
   }
 
   /**
@@ -203,17 +198,15 @@ healthcheck(callback) {
    * @param {ServiceNowAdapter~requestCallback} callback - The callback that
    *   handles the response.
    */
-   postRecord(callback) {
+  postRecord(callback) {
     /**
      * Write the body for this function.
      * The function is a wrapper for this.connector's post() method.
      * Note how the object was instantiated in the constructor().
      * post() takes a callback function.
      */
-     this.connector.post(callback)
-
+    connector.post((data,error)=> {return callback(data,error)});
   }
-  
 }
 
 module.exports = ServiceNowAdapter;
